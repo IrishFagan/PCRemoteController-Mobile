@@ -4,15 +4,20 @@ import {
   View,  
   StyleSheet, 
   PanResponder } from 'react-native'
-import io from 'socket.io-client'
 
 const MouseInput = () => {
+
+  const socket = new WebSocket('ws://192.168.0.4:8080')
+  
+  const sendCoordinates = (evt) => {
+    socket.send(`X: ${evt.nativeEvent.locationX} - Y: ${evt.nativeEvent.locationY}`)
+  }
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
-        console.log(`X: ${evt.nativeEvent.locationX} - Y: ${evt.nativeEvent.locationY}`)
+        sendCoordinates(evt)
       }
     })
   ).current
