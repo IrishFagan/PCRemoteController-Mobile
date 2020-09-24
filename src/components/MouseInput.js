@@ -8,9 +8,9 @@ import {
 const MouseInput = () => {
 
   const socket = new WebSocket('ws://192.168.0.4:8080')
-  
+
   const sendCoordinates = (evt) => {
-    socket.send(`X: ${evt.nativeEvent.locationX} - Y: ${evt.nativeEvent.locationY}`)
+    socket.send(`X: ${Math.floor(evt.nativeEvent.locationX)} - Y: ${Math.floor(evt.nativeEvent.locationY)}`)
   }
 
   const panResponder = useRef(
