@@ -9,15 +9,15 @@ const MouseInput = () => {
 
   const socket = new WebSocket('ws://192.168.0.4:8080')
 
-  const sendCoordinates = (evt) => {
-    socket.send(`X: ${Math.floor(evt.nativeEvent.locationX)} - Y: ${Math.floor(evt.nativeEvent.locationY)}`)
+  const sendMovement = (gestureState) => {
+    socket.send(`X: ${Math.floor(gestureState.dx)} - Y: ${Math.floor(gestureState.dy)}`)
   }
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
-        sendCoordinates(evt)
+        sendMovement(gestureState)
       }
     })
   ).current
