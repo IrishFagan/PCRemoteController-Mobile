@@ -7,14 +7,20 @@ import {
 
 const MouseInput = () => {
   const [size, setSize] = useState([0,0,0,0])
+  const sizeRef = useRef({})
   useEffect(() => {
-    console.log(size)
+    sizeRef.current = size
   }, size)
-
+  
   const socket = new WebSocket('ws://192.168.0.4:8080')
 
   const sendMovement = (gestureState) => {
-    socket.send(`X: ${Math.floor(gestureState.dx)} - Y: ${Math.floor(gestureState.dy)}`)
+    if((gestureState.moveX > sizeRef.current[0]) &&
+       (gestureState.moveY > sizeRef.current[1]) &&
+       (gestureState.moveX < sizeRef.current[2]) &&
+       (gestureState.moveY < sizeRef.current[3])) {
+      socket.send(`X: ${Math.floor(gestureState.dx)} - Y: ${Math.floor(gestureState.dy)}`)
+    }
   }
 
   const onLayout = (evt) => {
