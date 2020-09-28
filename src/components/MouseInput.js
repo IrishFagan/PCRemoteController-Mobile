@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {  
   Text, 
   View,  
@@ -6,11 +6,24 @@ import {
   PanResponder } from 'react-native'
 
 const MouseInput = () => {
+  const [size, setSize] = useState([0,0,0,0])
+  useEffect(() => {
+    console.log(size)
+  }, size)
 
   const socket = new WebSocket('ws://192.168.0.4:8080')
 
   const sendMovement = (gestureState) => {
     socket.send(`X: ${Math.floor(gestureState.dx)} - Y: ${Math.floor(gestureState.dy)}`)
+  }
+
+  const onLayout = (evt) => {
+    setSize([
+      evt.nativeEvent.layout.x,
+      evt.nativeEvent.layout.y,
+      evt.nativeEvent.layout.width + evt.nativeEvent.layout.x,
+      evt.nativeEvent.layout.height + evt.nativeEvent.layout.y
+    ])
   }
 
   const panResponder = useRef(
@@ -23,8 +36,11 @@ const MouseInput = () => {
   ).current
 
   return(
-    <View {...panResponder.panHandlers} style={[styles.input, styles.blackBorder]}>
-    </View>
+    <View
+      {...panResponder.panHandlers}
+      style={[styles.input, styles.blackBorder]}
+      onLayout={(evt) => onLayout(evt)}
+    />
   )
 }
 
