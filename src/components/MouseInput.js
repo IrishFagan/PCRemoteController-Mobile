@@ -5,21 +5,25 @@ import {
   StyleSheet, 
   PanResponder } from 'react-native'
 
-const MouseInput = () => {
+const MouseInput = (props) => {
   const [size, setSize] = useState([0,0,0,0])
   const sizeRef = useRef({})
   useEffect(() => {
     sizeRef.current = size
   }, size)
-  
-  const socket = new WebSocket('ws://192.168.0.4:8080')
 
   const sendMovement = (gestureState) => {
-    if((gestureState.moveX > sizeRef.current[0]) &&
-       (gestureState.moveY > sizeRef.current[1]) &&
-       (gestureState.moveX < sizeRef.current[2]) &&
-       (gestureState.moveY < sizeRef.current[3])) {
-      socket.send(`X: ${Math.floor(gestureState.dx)} - Y: ${Math.floor(gestureState.dy)}`)
+    if(typeof(props.socket) == 'undefined') {
+      console.log('Not sending!')
+    } else {
+      if((gestureState.moveX > sizeRef.current[0]) &&
+        (gestureState.moveY > sizeRef.current[1]) &&
+        (gestureState.moveX < sizeRef.current[2]) &&
+        (gestureState.moveY < sizeRef.current[3])) {
+          props.socket.send(`MOVE_MOUSE ${Math.floor(gestureState.dx)} ${Math.floor(gestureState.dy)}`)
+        console.log('Sending!!')
+        console.log(sizeRef.current[0], sizeRef.current[1], sizeRef.current[2], sizeRef.current[3])
+      }
     }
   }
 
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
     height: '40%',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    margin: '5%',
+    marginTop: '10%',
     backgroundColor: 'grey'
   },
   blackBorder: {
